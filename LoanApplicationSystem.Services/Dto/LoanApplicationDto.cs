@@ -7,7 +7,6 @@ public class LoanApplicationDto
     public int Id { get; set; }
     public string ApplicantName { get; set; } = default!;
     public decimal LoanAmount { get; set; }
-    public string? LoanPurpose { get; set; }
     public DateTime ApplicationDate { get; set; }
     public string Status { get; set; } = default!;
     public decimal InterestRate { get; set; }

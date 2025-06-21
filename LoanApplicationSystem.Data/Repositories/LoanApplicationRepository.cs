@@ -5,6 +5,7 @@ using LoanApplicationSystem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace LoanApplicationSystem.Data.Repositories;
+
 internal sealed class LoanApplicationRepository(LoanApplicationContext loanApplicationContext) : ILoanApplicationRepository
 {
     private readonly LoanApplicationContext _context = loanApplicationContext;
@@ -68,7 +69,7 @@ internal sealed class LoanApplicationRepository(LoanApplicationContext loanAppli
             throw new ArgumentNullException(nameof(application), "Application cannot be null.");
         }
 
-        existingApplication.UpdateApplication(application.ApplicationName, application.LoanAmount, application.LoanTerm, application.InterestRate);
+        existingApplication.UpdateApplication(application.ApplicantName, application.LoanAmount, application.LoanTerm, application.InterestRate);
 
         _context.LoanApplications.Update(existingApplication);
 
