@@ -27,13 +27,21 @@ internal sealed class LoanApplicationRepository(LoanApplicationContext loanAppli
         return _context.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<LoanApplication>> GetAllApplicationsAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
+    public async Task<(IEnumerable<LoanApplication> loans, int count)> GetAllApplicationsAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
     {
-        return await _context.LoanApplications
-            .OrderBy(a => a.ApplicationDate)
+        IQueryable<LoanApplication> apps = _context.LoanApplications;
+
+        int count = await apps.CountAsync(cancellationToken);
+
+        var loans = await apps
+            .AsNoTracking()
+            .OrderByDescending(a => a.ApplicationDate)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToListAsync(cancellationToken);
+
+        return (loans, count);
+
     }
 
     public async Task<LoanApplication> GetApplicationByIdAsync(int id, CancellationToken cancellationToken)
@@ -69,7 +77,11 @@ internal sealed class LoanApplicationRepository(LoanApplicationContext loanAppli
             throw new ArgumentNullException(nameof(application), "Application cannot be null.");
         }
 
-        existingApplication.UpdateApplication(application.ApplicantName, application.LoanAmount, application.LoanTerm, application.InterestRate);
+        existingApplication.UpdateApplication(
+            application.ApplicantName,
+            application.LoanAmount,
+            application.LoanTerm,
+            application.InterestRate);
 
         _context.LoanApplications.Update(existingApplication);
 
@@ -80,10 +92,6 @@ internal sealed class LoanApplicationRepository(LoanApplicationContext loanAppli
         else if (application.LoanStatus == LoanStatus.Rejected)
         {
             existingApplication.Reject();
-        }
-        else
-        {
-            throw new InvalidOperationException("Invalid loan status for update.");
         }
 
         await _context.SaveChangesAsync(cancellationToken);

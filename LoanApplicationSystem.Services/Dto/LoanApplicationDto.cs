@@ -27,7 +27,6 @@ public class LoanApplicationDto
         };
     }
 
-    // Optional: ToEntity conversion method
     public LoanApplication ToEntity()
     {
         return new LoanApplication

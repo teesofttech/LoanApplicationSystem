@@ -19,10 +19,10 @@ public sealed class LoanService(ILoanApplicationRepository loanApplicationReposi
         await _loanApplicationRepository.DeleteApplicationAsync(id, cancellationToken);
     }
 
-    public async Task<IEnumerable<LoanApplicationDto>> GetAllApplicationsAsync(int pageSize, int pageNumber, CancellationToken cancellationToken)
+    public async Task<(IEnumerable<LoanApplicationDto> loans, int totalCount)> GetAllApplicationsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
         var result = await _loanApplicationRepository.GetAllApplicationsAsync(pageSize, pageNumber, cancellationToken);
-        return result.Select(app => new LoanApplicationDto()
+        var loanApplications = result.loans.Select(app => new LoanApplicationDto()
         {
             Id = app.Id,
             ApplicantName = app.ApplicantName,
@@ -32,6 +32,8 @@ public sealed class LoanService(ILoanApplicationRepository loanApplicationReposi
             InterestRate = app.InterestRate,
             LoanTerm = app.LoanTerm
         }).ToList();
+
+        return (loanApplications, result.count);
     }
 
     public async Task<LoanApplicationDto> GetApplicationByIdAsync(int id, CancellationToken cancellationToken)

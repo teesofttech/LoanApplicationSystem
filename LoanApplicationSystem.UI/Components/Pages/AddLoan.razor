@@ -1,0 +1,57 @@
+﻿@page "/add-loan"
+@using LoanApplicationSystem.Domain.Enums
+@using LoanApplicationSystem.Services.Dto
+@using LoanApplicationSystem.Services.Interfaces
+@inject ILoanService _loanService
+@inject NavigationManager Nav
+
+<h3>Add Loan</h3>
+
+<EditForm Model="@loan" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-2">
+        <label for="applicantName">Applicant Name</label>
+        <InputText @bind-Value="loan.ApplicantName" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label for="loanAmount">Loan Amount</label>
+        <InputNumber @bind-Value="loan.LoanAmount" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label for="loanTerm">Loan Term (months)</label>
+        <InputNumber @bind-Value="loan.LoanTerm" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label for="interestRate">Interest Rate (%)</label>
+        <InputNumber @bind-Value="loan.InterestRate" class="form-control" />
+    </div>
+
+
+    <button type="button" class="btn btn-secondary me-2" @onclick="@(() => Nav.NavigateTo("loans"))">Cancel</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+@code {
+
+    private LoanApplicationDto loan;
+
+    protected override void OnInitialized()
+    {
+        loan = new LoanApplicationDto
+        {
+            ApplicationDate = DateTime.UtcNow,
+            Status = LoanStatus.Pending.ToString()
+        };
+
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await _loanService.AddApplicationAsync(loan, CancellationToken.None);
+        Nav.NavigateTo("/loans");
+    }
+}

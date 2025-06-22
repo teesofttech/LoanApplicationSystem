@@ -1,0 +1,72 @@
+﻿@page "/edit-loan/{Id:int}"
+@using LoanApplicationSystem.Domain.Enums
+@using LoanApplicationSystem.Services.Dto
+@using LoanApplicationSystem.Services.Interfaces
+
+@inject ILoanService _loanService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Loan Application</h3>
+
+@if (loanApplicationDto == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="loanApplicationDto" OnValidSubmit="UpdateLoan">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div>
+            <label>Applicant Name:</label>
+            <InputText @bind-Value="loanApplicationDto.ApplicantName" class="form-control" />
+        </div>
+
+        <div>
+            <label>Loan Amount:</label>
+            <InputNumber @bind-Value="loanApplicationDto.LoanAmount" class="form-control" />
+        </div>
+
+        <div>
+            <label>Loan Term (months):</label>
+            <InputNumber @bind-Value="loanApplicationDto.LoanTerm" class="form-control" />
+        </div>
+
+        <div>
+            <label>Interest Rate (%):</label>
+            <InputNumber @bind-Value="loanApplicationDto.InterestRate" class="form-control" />
+        </div>
+
+        <div>
+            <label>Status:</label>
+            <InputSelect @bind-Value="loanApplicationDto.Status" class="form-control">
+                @foreach (var status in Enum.GetValues(typeof(LoanStatus)))
+                {
+                    <option value="@status">@status</option>
+                }
+            </InputSelect>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Update</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int Id { get; set; }
+    private LoanApplicationDto loanApplicationDto;
+
+    protected override async Task OnInitializedAsync()
+    {
+        loanApplicationDto = await _loanService.GetApplicationByIdAsync(Id, CancellationToken.None);
+    }
+
+    private async Task UpdateLoan()
+    {
+        if (loanApplicationDto is not null)
+        {
+            await _loanService.UpdateApplicationAsync(loanApplicationDto, CancellationToken.None);
+            NavigationManager.NavigateTo("/loans");
+        }
+    }
+}
