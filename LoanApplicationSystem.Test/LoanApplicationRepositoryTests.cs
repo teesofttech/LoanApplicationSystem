@@ -39,7 +39,6 @@ public class LoanApplicationRepositoryTests
         _context.SaveChanges();
     }
 
-
     [Fact]
     public async Task GetAllAsync_Returns_Correct_Page()
     {
@@ -73,7 +72,6 @@ public class LoanApplicationRepositoryTests
         // Assert
         result.count.Should().Be(25);
     }
-
 
     [Fact]
     public async Task DeleteAsync_Removes_Loan()

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LoanApplicationSystem.Data\LoanApplicationSystem.Data.csproj" />
+    <ProjectReference Include="..\LoanApplicationSystem.Services\LoanApplicationSystem.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
