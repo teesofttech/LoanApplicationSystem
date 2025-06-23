@@ -2,21 +2,28 @@
 using LoanApplicationSystem.Domain.Enums;
 using LoanApplicationSystem.Services.Dto;
 using LoanApplicationSystem.Services.Interfaces;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace LoanApplicationSystem.Services.Services;
 
-public sealed class LoanService(ILoanApplicationRepository loanApplicationRepository) : ILoanService
+public sealed class LoanService(ILoanApplicationRepository loanApplicationRepository, ILogger<LoanService> logger) : ILoanService
 {
     private readonly ILoanApplicationRepository _loanApplicationRepository = loanApplicationRepository;
+    private readonly ILogger<LoanService> _logger = logger;
 
     public async Task AddApplicationAsync(LoanApplicationDto application, CancellationToken cancellationToken)
     {
+        _logger.LogInformation($"Start processing {JsonConvert.SerializeObject(application)}");
         await _loanApplicationRepository.AddApplicationAsync(application.ToEntity(), cancellationToken);
+        _logger.LogInformation($"End processing");
     }
 
     public async Task DeleteApplicationAsync(int id, CancellationToken cancellationToken)
     {
+        _logger.LogInformation($"Start delete processing {id}");
         await _loanApplicationRepository.DeleteApplicationAsync(id, cancellationToken);
+        _logger.LogInformation($"End delete processing {id}");
     }
 
     public async Task<(IEnumerable<LoanApplicationDto> loans, int totalCount)> GetAllApplicationsAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
@@ -68,6 +75,8 @@ public sealed class LoanService(ILoanApplicationRepository loanApplicationReposi
 
     public Task UpdateApplicationAsync(LoanApplicationDto application, CancellationToken cancellationToken)
     {
+        _logger.LogInformation($"Start update processing {JsonConvert.SerializeObject(application)}");
+
         var entity = application.ToEntity();
         return _loanApplicationRepository.UpdateApplicationAsync(entity, cancellationToken);
     }

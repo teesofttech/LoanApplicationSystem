@@ -13,22 +13,22 @@
 
     <div class="mb-2">
         <label for="applicantName">Applicant Name</label>
-        <InputText @bind-Value="loan.ApplicantName" class="form-control" />
+        <InputText @bind-Value="loan.ApplicantName" class="form-control" required />
     </div>
 
     <div class="mb-2">
         <label for="loanAmount">Loan Amount</label>
-        <InputNumber @bind-Value="loan.LoanAmount" class="form-control" />
+        <InputNumber @bind-Value="loan.LoanAmount" class="form-control" required />
     </div>
 
     <div class="mb-2">
         <label for="loanTerm">Loan Term (months)</label>
-        <InputNumber @bind-Value="loan.LoanTerm" class="form-control" />
+        <InputNumber @bind-Value="loan.LoanTerm" class="form-control" required />
     </div>
 
     <div class="mb-2">
         <label for="interestRate">Interest Rate (%)</label>
-        <InputNumber @bind-Value="loan.InterestRate" class="form-control" />
+        <InputNumber @bind-Value="loan.InterestRate" class="form-control" required />
     </div>
 
 

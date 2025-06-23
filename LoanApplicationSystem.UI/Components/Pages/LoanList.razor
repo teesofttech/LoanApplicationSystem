@@ -1,4 +1,5 @@
 ﻿@page "/loans"
+@using LoanApplicationSystem.Domain.Enums
 @using LoanApplicationSystem.Services.Dto
 @using LoanApplicationSystem.Services.Interfaces
 @inject ILoanService _loanService
@@ -35,6 +36,8 @@ else
                     <td>@loan.Status</td>
                     <td>
                         <button class="btn btn-sm btn-primary" @onclick="@(() => Nav.NavigateTo($"/edit-loan/{loan.Id}"))">Edit</button>
+                        <button class="btn btn-sm btn-success" @onclick="() => ApproveLoan(loan.Id)">Approve</button>
+                        <button class="btn btn-sm btn-info" @onclick="() => RejectLoan(loan.Id)">Reject</button>
                         <button class="btn btn-sm btn-danger" @onclick="() => DeleteLoan(loan.Id)">Delete</button>
                     </td>
                 </tr>
@@ -83,6 +86,26 @@ else
     private async Task DeleteLoan(int id)
     {
         await _loanService.DeleteApplicationAsync(id, CancellationToken.None);
+        await LoadPage(currentPage);
+        StateHasChanged();
+    }
+
+    private async Task ApproveLoan(int id)
+    {
+        var result = await _loanService.GetApplicationByIdAsync(id, CancellationToken.None);
+        result.Status = nameof(LoanStatus.Approved);
+
+        await _loanService.UpdateApplicationAsync(result, CancellationToken.None);
+        await LoadPage(currentPage);
+        StateHasChanged();
+    }
+
+    private async Task RejectLoan(int id)
+    {
+        var result = await _loanService.GetApplicationByIdAsync(id, CancellationToken.None);
+        result.Status = nameof(LoanStatus.Rejected);
+
+        await _loanService.UpdateApplicationAsync(result, CancellationToken.None);
         await LoadPage(currentPage);
         StateHasChanged();
     }
