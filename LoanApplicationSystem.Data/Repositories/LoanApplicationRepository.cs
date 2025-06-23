@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LoanApplicationSystem.Data.Repositories;
 
-internal sealed class LoanApplicationRepository(LoanApplicationContext loanApplicationContext) : ILoanApplicationRepository
+public sealed class LoanApplicationRepository(LoanApplicationContext loanApplicationContext) : ILoanApplicationRepository
 {
     private readonly LoanApplicationContext _context = loanApplicationContext;
 
